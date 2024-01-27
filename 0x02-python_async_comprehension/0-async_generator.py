@@ -3,7 +3,7 @@
 
 import asyncio
 import random
-from typing import Iterator
+from typing import AsyncIterator
 
 
 async def async_generator() -> AsyncIterator[float]:
