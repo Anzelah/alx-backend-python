@@ -2,14 +2,13 @@
 """Import your modules"""
 
 import unittest
-import utils
+from nose.tools import assert_equal
 
 
 class TestAccessNestedMap(unittest.TestCase):
     """Class to test the nested map fuction
     """
-    @parameterized.expand('nested_map', 'path', 'result',
-            [
+    @parameterized.expand([
                 ({"a": 1}, ["a"], 1),
                 ({"a": {"b": 2}}, ["a"], 2),
                 (({"a": {"b": 2}}, ["a", "b"])
@@ -17,4 +16,4 @@ class TestAccessNestedMap(unittest.TestCase):
     def TestAccessNestedMap.test_access_nested_map(nested_map, path, result):
         """Method holding all the tests or the nested_map function
         """
-        assert utils.access_nested_map(nested_map, path) == result
+        assert_equal((nested_map, path), result)
