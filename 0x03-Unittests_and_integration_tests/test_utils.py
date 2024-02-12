@@ -13,7 +13,7 @@ class TestAccessNestedMap(unittest.TestCase):
                 ({"a": {"b": 2}}, ["a"], 2),
                 (({"a": {"b": 2}}, ["a", "b"])
             ])
-    def TestAccessNestedMap.test_access_nested_map(nested_map, path, result):
+    def test_access_nested_map(nested_map, path, result):
         """Method holding all the tests or the nested_map function
         """
         assert_equal((nested_map, path), result)
