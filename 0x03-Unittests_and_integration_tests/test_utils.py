@@ -64,7 +64,7 @@ class TestMemoize(unittest.TestCase):
                 """The first method in the memoized functions
                 """
                 return 42
-            
+
             @memoize
             def a_property(self):
                 """The memoized function
@@ -72,7 +72,6 @@ class TestMemoize(unittest.TestCase):
                 return self.a_method()
             mock = Mock(a_method)
             mock.assert_called_once
-
 
 
 if __name__ == '__main__':
