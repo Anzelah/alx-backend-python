@@ -45,8 +45,7 @@ class TestGithubOrgClient(unittest.TestCase):
                    PropertyMock(return_value=expected_res)) as mock:
             mock_json.return_value = [{'name': 'repo1', 'name2': 'repo2'}]
             results = GithubOrgClient(name).public_repos()
-
-            self.assertIn('repo1', results)
+            self.assertEqual(results, ['repo1'])
             mock_json.assert_called_once()
             mock.assert_called_once()
 
