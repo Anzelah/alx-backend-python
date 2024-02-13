@@ -33,3 +33,29 @@ class TestGithubOrgClient(unittest.TestCase):
                    PropertyMock(return_value=expected_result)):
             result = GithubOrgClient(name)._public_repos_url
             self.assertEqual(result, expected_result["repos_url"])
+
+    @parameterized.expand([
+        ('org_name', 'https://some_url.com')
+        ])
+    @patch('client.get_json')
+    def test_public_repos(self, name, expected_res, mock_json):
+        """Unit testing for the public_repos function
+        """
+        with patch('client.GithubOrgClient._public_repos_url',
+                   PropertyMock(return_value=expected_res)) as mock:
+            mock_json.return_value = [{'name': 'repo1', 'name2': 'repo2'}]
+            results = GithubOrgClient(name).public_repos()
+
+            self.assertIn('repo1', results)
+            mock_json.assert_called_once()
+            mock.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+        ])
+    def test_has_license(self, repo, license_key, expected_res):
+        """Unit test the has_licence function in GithubOrgClient class
+        """
+        results = GithubOrgClient.has_license(repo, license_key)
+        self.assertEqual(results, expected_res)
