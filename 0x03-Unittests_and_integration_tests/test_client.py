@@ -63,10 +63,8 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(results, expected_res)
 
 
-
-@parameterized_class(['org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'],
-        TEST_PAYLOAD
-        )
+@parameterized_class(['org_payload', 'repos_payload', 'expected_repos',
+                      'apache2_repos'], TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Implement an integration test
     """
@@ -74,9 +72,12 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def setUpClass(cls):
         """Called before tests in an individual class are run
         """
-        cls.get_patcher = patch('requests.get', side_effect=[
-            cls.org_payload, cls.repos_payload])
+        cls.get_patcher = patch('requests.get')
         cls.mock_get = cls.get_patcher.start()
+        cls.mock_get.side_effect = [
+                Mock(json=lambda: cls.org_payload),
+                Mock(json=lambda: cls.repos_payload)
+            ]
 
     @classmethod
     def tearDownClass(cls):
@@ -89,8 +90,14 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         results = GithubOrgClient('example.com/org').public_repos()
         self.assertEqual(results, self.expected_repos)
-        
+
     def test_public_repos_plus_license(self):
-        """Test the public_repos() with license"""
-        results = GithubOrgClient('example.com/org').public_repos(license='apache2')
+        """Test the public_repos() with license
+        """
+        org = GithubOrgClient('example.com/repos')
+        results = org.public_repos(license='apache2')
         self.assertEqual(results, self.apache2_repos)
+
+
+if __name__ == '__main__':
+    unittest.main()
