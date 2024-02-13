@@ -34,21 +34,20 @@ class TestGithubOrgClient(unittest.TestCase):
             result = GithubOrgClient(name)._public_repos_url
             self.assertEqual(result, expected_result["repos_url"])
 
-    @parameterized.expand([
-        ('org_name', 'https://some_url.com')
-        ])
     @patch('client.get_json')
-    def test_public_repos(self, name, expected_res, mock_json):
+    def test_public_repos(self, mock_json):
         """Unit testing for the public_repos function
         """
+        payload = [{'name': 'Youtube'}, {'name': 'iTv'}]
+        mock_json.return_value = payload
+
         with patch('client.GithubOrgClient._public_repos_url',
-                   new_callable = PropertyMock) as mock:
-            mock.return_value = expected_res
-            mock_json.return_value = [{'name': 'repo1', 'name2': 'repo2'}]
+                   new_callable=PropertyMock) as mock:
+            mock.return_value = 'value'
+            results = GithubOrgClient('name').public_repos()
 
-            results = GithubOrgClient(name).public_repos()
+            self.assertEqual(results, ['Youtube', 'iTv'])
 
-            self.assertIn('repo1', results)
             mock_json.assert_called_once()
             mock.assert_called_once()
 
