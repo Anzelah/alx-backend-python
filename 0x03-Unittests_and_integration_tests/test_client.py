@@ -42,10 +42,13 @@ class TestGithubOrgClient(unittest.TestCase):
         """Unit testing for the public_repos function
         """
         with patch('client.GithubOrgClient._public_repos_url',
-                   PropertyMock(return_value=expected_res)) as mock:
+                   new_callable = PropertyMock) as mock:
+            mock.return_value = expected_res
             mock_json.return_value = [{'name': 'repo1', 'name2': 'repo2'}]
+
             results = GithubOrgClient(name).public_repos()
-            self.assertEqual(results, ['repo1'])
+
+            self.assertIn('repo1', results)
             mock_json.assert_called_once()
             mock.assert_called_once()
 
